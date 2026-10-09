@@ -30,7 +30,7 @@ Sandbox proof of concept. Do not build menus, progression or cosmetics yet.
 - A permanent, non-collectable station placed in the sandbox. Players use it to fully recharge the ring to 100%.
 - Also ends Low Power Mode immediately (calls `RingEnergy.SetFull()`).
 - Reusable with no limit in the sandbox. It is never picked up, consumed or moved.
-- Activation: the player flies into its charging zone (trigger collider) and stays there for a short charge time. It does not recharge instantly. Leaving the zone cancels the charge.
+- Activation: the player flies into its charging zone (trigger collider) and holds the interact input to charge for a short charge time. It does not recharge instantly. Releasing interact or leaving the zone cancels the charge.
 - Each player in the zone charges independently.
 - Server-authoritative once networking exists: the server validates that the player is in range and applies the recharge.
 - Visuals: a large glowing battery/lantern landmark, readable from far away, with a clear charging effect and sound.

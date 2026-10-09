@@ -10,6 +10,9 @@ namespace Lightbound
         public float linearDamping = 0.2f;
         public float angularDamping = 1f;
 
+        [Header("Stopping (active brake once Move input releases)")]
+        [Range(0f, 1f)] public float stopDragFactor = 0.1f;
+
         [Header("Look")]
         public float mouseSensitivity = 2f;
         public float minPitch = -89f;

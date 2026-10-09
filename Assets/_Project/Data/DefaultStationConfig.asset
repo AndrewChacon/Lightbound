@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c69beff45cb51a1bb340d3b9632d29, type: 3}
   m_Name: DefaultStationConfig
   m_EditorClassIdentifier: Lightbound.Data::Lightbound.StationConfig
-  chargeTime: 3
+  chargeTime: 2
   zoneRadius: 5
   restorePercent: 1

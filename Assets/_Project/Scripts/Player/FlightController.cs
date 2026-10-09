@@ -12,11 +12,7 @@ namespace Lightbound
 
         private Rigidbody _rigidbody;
         private InputAction _moveAction;
-        private InputAction _lookAction;
         private InputAction _launchAction;
-
-        private float _yaw;
-        private float _pitch;
 
         private void Awake()
         {
@@ -24,57 +20,49 @@ namespace Lightbound
             _rigidbody.useGravity = false;
             _rigidbody.linearDamping = config.linearDamping;
             _rigidbody.angularDamping = config.angularDamping;
-            // Rotation is driven by mouse look each frame, not physics torque.
+            // Rotation is driven by FirstPersonLook each frame, not physics torque.
             _rigidbody.freezeRotation = true;
+            // Discrete detection can tunnel straight through thin colliders (like the
+            // station's capsule) at flight speeds, so sweep for collisions instead.
+            _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
             var flightMap = inputActions.FindActionMap("Flight", throwIfNotFound: true);
             _moveAction = flightMap.FindAction("Move");
-            _lookAction = flightMap.FindAction("Look");
             _launchAction = flightMap.FindAction("Launch");
         }
 
         private void OnEnable()
         {
             _moveAction.Enable();
-            _lookAction.Enable();
             _launchAction.Enable();
             _launchAction.performed += OnLaunchPerformed;
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
 
         private void OnDisable()
         {
             _launchAction.performed -= OnLaunchPerformed;
             _moveAction.Disable();
-            _lookAction.Disable();
             _launchAction.Disable();
-
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-
-        private void Update()
-        {
-            Vector2 look = _lookAction.ReadValue<Vector2>() * config.mouseSensitivity;
-            _yaw += look.x;
-            _pitch = Mathf.Clamp(_pitch - look.y, config.minPitch, config.maxPitch);
-
-            transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
-            if (cameraPivot != null)
-            {
-                cameraPivot.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
-            }
         }
 
         private void FixedUpdate()
         {
             Vector2 move = _moveAction.ReadValue<Vector2>();
-            Transform facing = cameraPivot != null ? cameraPivot : transform;
-            Vector3 direction = facing.forward * move.y + facing.right * move.x;
 
-            _rigidbody.AddForce(direction * config.thrustForce, ForceMode.Force);
+            if (move.sqrMagnitude > 0.0001f)
+            {
+                Transform facing = cameraPivot != null ? cameraPivot : transform;
+                Vector3 direction = facing.forward * move.y + facing.right * move.x;
+                _rigidbody.AddForce(direction * config.thrustForce, ForceMode.Force);
+            }
+            else
+            {
+                // Active brake once input releases, on top of the ambient linear
+                // damping used while thrusting. stopDragFactor is the fraction of
+                // velocity retained after a full second with no input.
+                float decay = Mathf.Pow(config.stopDragFactor, Time.fixedDeltaTime);
+                _rigidbody.linearVelocity *= decay;
+            }
         }
 
         private void OnLaunchPerformed(InputAction.CallbackContext context)
