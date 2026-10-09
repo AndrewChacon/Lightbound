@@ -990,6 +990,118 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Flight",
+            "id": "5613cfb5-a128-42ed-8fe7-a35e1fb5bbde",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "8dff1b0b-e471-4d37-aa96-9db65479c7c7",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Look",
+                    "type": "Value",
+                    "id": "afe77197-0c6b-4aa3-a793-f3ad21e1b04b",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Launch",
+                    "type": "Button",
+                    "id": "9f9b7d8c-d382-4e89-9766-00ed04bfe58e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "WASD",
+                    "id": "23c6d8c1-1cbe-4bc0-abb2-8ad4e73aa57d",
+                    "path": "Dpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "11424f78-ebfd-4630-b805-5926ac3e5221",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "cabd4233-01d1-43ce-97d8-bb99a94f234c",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "f9dce44e-d5c5-4158-8c3d-cf723e6e33da",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "2b4ddede-38e5-4940-8ff0-ec1228940282",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "52bc1683-767d-4de1-a737-067113422378",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7df8f6ca-5162-486f-9f68-e5333d662b63",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "MultiTap(tapCount=2)",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Launch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
