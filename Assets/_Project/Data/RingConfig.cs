@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace SpaceLanterns
+namespace Lightbound
 {
-    [CreateAssetMenu(fileName = "RingConfig", menuName = "Space Lanterns/Ring Config")]
+    [CreateAssetMenu(fileName = "RingConfig", menuName = "Lightbound/Ring Config")]
     public class RingConfig : ScriptableObject
     {
         [Header("Core")]

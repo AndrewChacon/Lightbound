@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SpaceLanterns
+namespace Lightbound
 {
     public class PlayerRingEnergy : MonoBehaviour
     {

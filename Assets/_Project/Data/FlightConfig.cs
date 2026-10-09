@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace SpaceLanterns
+namespace Lightbound
 {
-    [CreateAssetMenu(fileName = "FlightConfig", menuName = "Space Lanterns/Flight Config")]
+    [CreateAssetMenu(fileName = "FlightConfig", menuName = "Lightbound/Flight Config")]
     public class FlightConfig : ScriptableObject
     {
         [Header("Movement")]

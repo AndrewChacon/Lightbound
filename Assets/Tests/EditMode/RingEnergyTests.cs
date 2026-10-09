@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using SpaceLanterns;
+using Lightbound;
 
 public class RingEnergyTests
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace SpaceLanterns
+namespace Lightbound
 {
     /// <summary>
     /// Ring energy state machine: 0-100% with Low Power Mode hysteresis.
