@@ -18,7 +18,10 @@ namespace Lightbound
         public float minPitch = -89f;
         public float maxPitch = 89f;
 
-        [Header("Launch impulse (double-tap Shift)")]
+        [Header("Launch impulse (double-tap Shift; also used for takeoff)")]
         public float launchImpulse = 8f;
+
+        [Header("Walking (grounded)")]
+        public float walkSpeed = 5f;
     }
 }
