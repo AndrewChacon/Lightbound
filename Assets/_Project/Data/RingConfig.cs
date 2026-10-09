@@ -15,8 +15,5 @@ namespace Lightbound
         [Header("Pea shot (wired up in a later build-order step)")]
         public float peaShotEnergyCost = 5f;
         public float lowPowerChargePerHit = 2f;
-
-        [Header("Recharge sources (wired up in a later build-order step)")]
-        public float batteryRestorePercent = 1f;
     }
 }
