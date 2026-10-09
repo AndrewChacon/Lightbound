@@ -22,6 +22,7 @@ namespace Lightbound
         private FirstPersonLook _look;
         private FlightController _flightController;
         private SurfaceWalker _surfaceWalker;
+        private InputAction _moveAction;
         private InputAction _launchAction;
 
         private bool _isGrounded;
@@ -35,11 +36,18 @@ namespace Lightbound
             _surfaceWalker = GetComponent<SurfaceWalker>();
 
             var flightMap = inputActions.FindActionMap("Flight", throwIfNotFound: true);
+            _moveAction = flightMap.FindAction("Move");
             _launchAction = flightMap.FindAction("Launch");
         }
 
         private void OnEnable()
         {
+            // SurfaceAttach is the single owner of Move/Launch's global enabled
+            // state: both are shared between FlightController and SurfaceWalker,
+            // and InputAction enable/disable isn't reference-counted, so having
+            // more than one owner toggling it causes exactly the kind of "stuck
+            // after takeoff" bug this centralizes away.
+            _moveAction.Enable();
             _launchAction.Enable();
             _launchAction.performed += OnLaunchPerformed;
 
@@ -51,6 +59,7 @@ namespace Lightbound
         {
             _launchAction.performed -= OnLaunchPerformed;
             _launchAction.Disable();
+            _moveAction.Disable();
         }
 
         private void OnCollisionEnter(Collision collision)

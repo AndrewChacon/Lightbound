@@ -25,15 +25,8 @@ namespace Lightbound
             _moveAction = flightMap.FindAction("Move");
         }
 
-        private void OnEnable()
-        {
-            _moveAction.Enable();
-        }
-
-        private void OnDisable()
-        {
-            _moveAction.Disable();
-        }
+        // Move's global enabled state is owned by SurfaceAttach (shared with
+        // FlightController too) — this script just reads it while it's enabled.
 
         private void FixedUpdate()
         {

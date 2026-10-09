@@ -18,4 +18,4 @@ MonoBehaviour:
   mouseSensitivity: 2
   minPitch: -89
   maxPitch: 89
-  launchImpulse: 8
+  launchImpulse: 5.33

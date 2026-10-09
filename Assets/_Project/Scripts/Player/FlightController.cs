@@ -33,16 +33,15 @@ namespace Lightbound
 
         private void OnEnable()
         {
-            _moveAction.Enable();
-            _launchAction.Enable();
+            // Move/Launch's global enabled state is owned by SurfaceAttach, since
+            // both actions are shared with SurfaceWalker/SurfaceAttach too and
+            // InputAction enable/disable isn't reference-counted across listeners.
             _launchAction.performed += OnLaunchPerformed;
         }
 
         private void OnDisable()
         {
             _launchAction.performed -= OnLaunchPerformed;
-            _moveAction.Disable();
-            _launchAction.Disable();
         }
 
         private void FixedUpdate()
