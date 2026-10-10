@@ -92,7 +92,7 @@ namespace Lightbound
 
         private void OnLaunchPerformed(InputAction.CallbackContext context)
         {
-            // While flying, double-tap Space drops you fast until the existing
+            // While flying, double-tap Shift drops you fast until the existing
             // auto-landing takes over (SurfaceAttach handles the same action's
             // grounded-state case — takeoff — separately).
             Vector3 v = _rigidbody.linearVelocity;

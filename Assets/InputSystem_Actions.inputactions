@@ -1138,7 +1138,7 @@
                 {
                     "name": "",
                     "id": "7df8f6ca-5162-486f-9f68-e5333d662b63",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "MultiTap(tapCount=2)",
                     "processors": "",
                     "groups": "Keyboard&Mouse",

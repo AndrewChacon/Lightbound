@@ -6,7 +6,7 @@ namespace Lightbound
     /// <summary>
     /// Owns the Flying/Grounded state: lands automatically on contact with a
     /// Landable-tagged surface, takes off again on the Launch action (the same
-    /// double-tap-Space impulse used mid-flight). Toggles FlightController and
+    /// double-tap-Shift impulse used mid-flight). Toggles FlightController and
     /// SurfaceWalker so exactly one movement mode is ever active.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]

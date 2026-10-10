@@ -18,10 +18,10 @@ namespace Lightbound
         public float minPitch = -89f;
         public float maxPitch = 89f;
 
-        [Header("Launch impulse (double-tap Space; also used for takeoff)")]
+        [Header("Launch impulse (double-tap Shift; also used for takeoff)")]
         public float launchImpulse = 8f;
 
-        [Header("Fall-to-ground (double-tap Space while flying)")]
+        [Header("Fall-to-ground (double-tap Shift while flying)")]
         public float fallSpeed = 15f;
 
         [Header("Walking (grounded)")]
