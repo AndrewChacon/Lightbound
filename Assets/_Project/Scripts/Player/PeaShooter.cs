@@ -13,6 +13,7 @@ namespace Lightbound
         [SerializeField] private Transform aimOrigin;
 
         private PlayerRingEnergy _playerRingEnergy;
+        private HandRecoil _handRecoil;
         private InputAction _fireAction;
         private LayerMask _ignoreMask;
         private float _nextFireTime;
@@ -20,6 +21,7 @@ namespace Lightbound
         private void Awake()
         {
             _playerRingEnergy = GetComponent<PlayerRingEnergy>();
+            _handRecoil = firePoint != null ? firePoint.GetComponent<HandRecoil>() : null;
             _ignoreMask = 1 << LayerMask.NameToLayer("Player");
 
             var flightMap = inputActions.FindActionMap("Flight", throwIfNotFound: true);
@@ -71,6 +73,8 @@ namespace Lightbound
             projectile.GrantsLowPowerCharge = lowPower;
             projectile.LowPowerChargeAmount = ringConfig.lowPowerChargePerHit;
             projectile.Shooter = _playerRingEnergy;
+
+            _handRecoil?.PlayRecoil();
         }
     }
 }

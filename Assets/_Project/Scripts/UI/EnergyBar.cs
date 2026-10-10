@@ -3,24 +3,22 @@ using UnityEngine.UI;
 
 namespace Lightbound
 {
-    [RequireComponent(typeof(Slider))]
+    [RequireComponent(typeof(Image))]
     public class EnergyBar : MonoBehaviour
     {
         [SerializeField] private PlayerRingEnergy playerRingEnergy;
 
-        private Slider _slider;
+        private Image _fillImage;
 
         private void Awake()
         {
-            _slider = GetComponent<Slider>();
+            _fillImage = GetComponent<Image>();
         }
 
         private void OnEnable()
         {
             var ring = playerRingEnergy.Ring;
-            _slider.minValue = 0f;
-            _slider.maxValue = ring.Max;
-            _slider.value = ring.Current;
+            UpdateFill(ring.Current, ring.Max);
             ring.OnEnergyChanged += HandleEnergyChanged;
         }
 
@@ -31,7 +29,12 @@ namespace Lightbound
 
         private void HandleEnergyChanged(float value)
         {
-            _slider.value = value;
+            UpdateFill(value, playerRingEnergy.Ring.Max);
+        }
+
+        private void UpdateFill(float current, float max)
+        {
+            _fillImage.fillAmount = max > 0f ? current / max : 0f;
         }
     }
 }

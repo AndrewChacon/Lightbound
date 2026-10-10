@@ -15,7 +15,10 @@ MonoBehaviour:
   thrustForce: 20
   linearDamping: 0.2
   angularDamping: 1
-  mouseSensitivity: 2
+  stopDragFactor: 0.1
+  mouseSensitivity: 0.3
   minPitch: -89
   maxPitch: 89
   launchImpulse: 5.33
+  fallSpeed: 40
+  walkSpeed: 8
