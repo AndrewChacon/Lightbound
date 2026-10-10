@@ -14,6 +14,7 @@ namespace Lightbound
         private InputAction _launchAction;
         private InputAction _ascendAction;
         private InputAction _descendAction;
+        private bool _isFalling;
 
         private void Awake()
         {
@@ -44,6 +45,9 @@ namespace Lightbound
             _ascendAction.Enable();
             _descendAction.Enable();
             _launchAction.performed += OnLaunchPerformed;
+            // Reset each time flight starts fresh (SurfaceAttach disables this
+            // component on landing, so this naturally clears for the next flight).
+            _isFalling = false;
         }
 
         private void OnDisable()
@@ -72,31 +76,40 @@ namespace Lightbound
                 _rigidbody.linearVelocity = new Vector3(v.x * decay, v.y, v.z * decay);
             }
 
-            bool ascend = _ascendAction.IsPressed();
-            bool descend = _descendAction.IsPressed();
-            if (ascend || descend)
+            if (_isFalling)
             {
-                float vertical = (ascend ? 1f : 0f) - (descend ? 1f : 0f);
-                _rigidbody.AddForce(Vector3.up * vertical * config.thrustForce, ForceMode.Force);
+                // Committed descent, held at a constant fall speed regardless of
+                // height, until SurfaceAttach lands us (which disables this whole
+                // component) — overrides Ascend/Descend and skips the vertical
+                // brake entirely so it can't decay back to a stop mid-air.
+                Vector3 v = _rigidbody.linearVelocity;
+                _rigidbody.linearVelocity = new Vector3(v.x, -config.fallSpeed, v.z);
             }
             else
             {
-                // Same brake on vertical drift once Ascend/Descend release, mirroring
-                // horizontal exactly — no special-casing. The fall-to-ground kick
-                // below is strong enough to still carry you down a meaningful
-                // distance before this decays it.
-                Vector3 v = _rigidbody.linearVelocity;
-                _rigidbody.linearVelocity = new Vector3(v.x, v.y * decay, v.z);
+                bool ascend = _ascendAction.IsPressed();
+                bool descend = _descendAction.IsPressed();
+                if (ascend || descend)
+                {
+                    float vertical = (ascend ? 1f : 0f) - (descend ? 1f : 0f);
+                    _rigidbody.AddForce(Vector3.up * vertical * config.thrustForce, ForceMode.Force);
+                }
+                else
+                {
+                    // Same brake on vertical drift once Ascend/Descend release,
+                    // mirroring horizontal exactly.
+                    Vector3 v = _rigidbody.linearVelocity;
+                    _rigidbody.linearVelocity = new Vector3(v.x, v.y * decay, v.z);
+                }
             }
         }
 
         private void OnLaunchPerformed(InputAction.CallbackContext context)
         {
-            // While flying, double-tap Shift drops you fast until the existing
+            // While flying, double-tap Shift commits to falling until the existing
             // auto-landing takes over (SurfaceAttach handles the same action's
             // grounded-state case — takeoff — separately).
-            Vector3 v = _rigidbody.linearVelocity;
-            _rigidbody.linearVelocity = new Vector3(v.x, -config.fallSpeed, v.z);
+            _isFalling = true;
         }
     }
 }
