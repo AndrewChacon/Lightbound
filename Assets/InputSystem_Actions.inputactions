@@ -1057,6 +1057,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "d680a187-cd35-4eb9-816f-7d660924810a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1129,7 +1138,7 @@
                 {
                     "name": "",
                     "id": "7df8f6ca-5162-486f-9f68-e5333d662b63",
-                    "path": "<Keyboard>/leftShift",
+                    "path": "<Keyboard>/space",
                     "interactions": "MultiTap(tapCount=2)",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -1178,6 +1187,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Descend",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cc4d7024-e5b3-44c0-8da3-7d68d671b1e4",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -84,9 +84,7 @@ namespace Lightbound
                 // Same brake on vertical drift once Ascend/Descend release, mirroring
                 // horizontal exactly — no special-casing. The fall-to-ground kick
                 // below is strong enough to still carry you down a meaningful
-                // distance before this decays it, without needing a fragile
-                // "protected for N seconds" window that Shift's double-tap (the
-                // same key as Descend) could keep re-extending.
+                // distance before this decays it.
                 Vector3 v = _rigidbody.linearVelocity;
                 _rigidbody.linearVelocity = new Vector3(v.x, v.y * decay, v.z);
             }
@@ -94,7 +92,7 @@ namespace Lightbound
 
         private void OnLaunchPerformed(InputAction.CallbackContext context)
         {
-            // While flying, double-tap Shift drops you fast until the existing
+            // While flying, double-tap Space drops you fast until the existing
             // auto-landing takes over (SurfaceAttach handles the same action's
             // grounded-state case — takeoff — separately).
             Vector3 v = _rigidbody.linearVelocity;
