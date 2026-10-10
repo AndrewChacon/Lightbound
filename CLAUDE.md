@@ -62,8 +62,8 @@ Assets/
 ## Build order
 1. ✅ Solo flight + energy bar in an empty scene
 2. ✅ Landing on surfaces (landing, takeoff, ground walking)
-3. Pea shooter + one turret enemy
-4. Low Power Mode + Lantern Battery station + checkpoints — station itself is ✅ done (built ahead of order); Low Power Mode's state machine is ✅ done and unit tested but not yet wired into gameplay (needs the pea shooter to be meaningful); checkpoints not started
+3. ✅ Pea shooter + one turret enemy (click-to-fire, raycast projectile, destructible/respawning turret target)
+4. Low Power Mode + Lantern Battery station + checkpoints — station itself is ✅ done (built ahead of order); Low Power Mode's state machine is ✅ done, unit tested, and now wired into gameplay via the pea shooter (reduced damage, free shots, charge-per-hit); checkpoints not started
 5. Asteroid belt (breakable asteroids)
 6. 2-player networking, then 4
 7. Proximity voice, then Steam lobbies
