@@ -14,6 +14,7 @@ namespace Lightbound
         private InputAction _launchAction;
         private InputAction _ascendAction;
         private InputAction _descendAction;
+        private float _fallBoostUntil;
 
         private void Awake()
         {
@@ -55,8 +56,10 @@ namespace Lightbound
 
         private void FixedUpdate()
         {
-            Vector2 move = _moveAction.ReadValue<Vector2>();
+            float decay = Mathf.Pow(config.stopDragFactor, Time.fixedDeltaTime);
+            Vector3 v = _rigidbody.linearVelocity;
 
+            Vector2 move = _moveAction.ReadValue<Vector2>();
             if (move.sqrMagnitude > 0.0001f)
             {
                 // Yaw-only facing (not the camera's pitch) — looking up/down no
@@ -66,19 +69,25 @@ namespace Lightbound
             }
             else
             {
-                // Active brake only touches horizontal drift once Move releases;
-                // vertical motion is governed separately by Ascend/Descend and the
-                // fall-to-ground kick below, decaying only through the ambient
-                // linear damping like everything else in zero-g.
-                float decay = Mathf.Pow(config.stopDragFactor, Time.fixedDeltaTime);
-                Vector3 v = _rigidbody.linearVelocity;
+                // Active brake on horizontal drift once Move releases.
+                v = _rigidbody.linearVelocity;
                 _rigidbody.linearVelocity = new Vector3(v.x * decay, v.y, v.z * decay);
             }
 
-            float vertical = (_ascendAction.IsPressed() ? 1f : 0f) - (_descendAction.IsPressed() ? 1f : 0f);
-            if (vertical != 0f)
+            bool ascend = _ascendAction.IsPressed();
+            bool descend = _descendAction.IsPressed();
+            if (ascend || descend)
             {
+                float vertical = (ascend ? 1f : 0f) - (descend ? 1f : 0f);
                 _rigidbody.AddForce(Vector3.up * vertical * config.thrustForce, ForceMode.Force);
+            }
+            else if (Time.time >= _fallBoostUntil)
+            {
+                // Same brake on vertical drift once Ascend/Descend release, mirroring
+                // horizontal — except while the fall-to-ground kick below is still
+                // active, so it isn't killed the instant you let go of Shift.
+                v = _rigidbody.linearVelocity;
+                _rigidbody.linearVelocity = new Vector3(v.x, v.y * decay, v.z);
             }
         }
 
@@ -86,9 +95,11 @@ namespace Lightbound
         {
             // While flying, double-tap Shift drops you fast until the existing
             // auto-landing takes over (SurfaceAttach handles the same action's
-            // grounded-state case — takeoff — separately).
+            // grounded-state case — takeoff — separately). Protected from the
+            // vertical brake for a bit so it's a real drop, not an instant stop.
             Vector3 v = _rigidbody.linearVelocity;
             _rigidbody.linearVelocity = new Vector3(v.x, -config.fallSpeed, v.z);
+            _fallBoostUntil = Time.time + config.fallBoostDuration;
         }
     }
 }
