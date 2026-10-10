@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: DefaultTurretConfig
   m_EditorClassIdentifier: Lightbound.Data::Lightbound.TurretConfig
   maxHealth: 100
-  respawnDelay: 8
+  respawnDelay: 4
