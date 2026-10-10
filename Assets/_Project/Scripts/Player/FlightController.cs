@@ -8,11 +8,12 @@ namespace Lightbound
     {
         [SerializeField] private FlightConfig config;
         [SerializeField] private InputActionAsset inputActions;
-        [SerializeField] private Transform cameraPivot;
 
         private Rigidbody _rigidbody;
         private InputAction _moveAction;
         private InputAction _launchAction;
+        private InputAction _ascendAction;
+        private InputAction _descendAction;
 
         private void Awake()
         {
@@ -29,6 +30,8 @@ namespace Lightbound
             var flightMap = inputActions.FindActionMap("Flight", throwIfNotFound: true);
             _moveAction = flightMap.FindAction("Move");
             _launchAction = flightMap.FindAction("Launch");
+            _ascendAction = flightMap.FindAction("Ascend");
+            _descendAction = flightMap.FindAction("Descend");
         }
 
         private void OnEnable()
@@ -36,12 +39,18 @@ namespace Lightbound
             // Move/Launch's global enabled state is owned by SurfaceAttach, since
             // both actions are shared with SurfaceWalker/SurfaceAttach too and
             // InputAction enable/disable isn't reference-counted across listeners.
+            // Ascend/Descend are exclusive to this script, so it's safe to own them
+            // directly here.
+            _ascendAction.Enable();
+            _descendAction.Enable();
             _launchAction.performed += OnLaunchPerformed;
         }
 
         private void OnDisable()
         {
             _launchAction.performed -= OnLaunchPerformed;
+            _ascendAction.Disable();
+            _descendAction.Disable();
         }
 
         private void FixedUpdate()
@@ -50,24 +59,36 @@ namespace Lightbound
 
             if (move.sqrMagnitude > 0.0001f)
             {
-                Transform facing = cameraPivot != null ? cameraPivot : transform;
-                Vector3 direction = facing.forward * move.y + facing.right * move.x;
+                // Yaw-only facing (not the camera's pitch) — looking up/down no
+                // longer affects horizontal movement, matching SurfaceWalker.
+                Vector3 direction = transform.forward * move.y + transform.right * move.x;
                 _rigidbody.AddForce(direction * config.thrustForce, ForceMode.Force);
             }
             else
             {
-                // Active brake once input releases, on top of the ambient linear
-                // damping used while thrusting. stopDragFactor is the fraction of
-                // velocity retained after a full second with no input.
+                // Active brake only touches horizontal drift once Move releases;
+                // vertical motion is governed separately by Ascend/Descend and the
+                // fall-to-ground kick below, decaying only through the ambient
+                // linear damping like everything else in zero-g.
                 float decay = Mathf.Pow(config.stopDragFactor, Time.fixedDeltaTime);
-                _rigidbody.linearVelocity *= decay;
+                Vector3 v = _rigidbody.linearVelocity;
+                _rigidbody.linearVelocity = new Vector3(v.x * decay, v.y, v.z * decay);
+            }
+
+            float vertical = (_ascendAction.IsPressed() ? 1f : 0f) - (_descendAction.IsPressed() ? 1f : 0f);
+            if (vertical != 0f)
+            {
+                _rigidbody.AddForce(Vector3.up * vertical * config.thrustForce, ForceMode.Force);
             }
         }
 
         private void OnLaunchPerformed(InputAction.CallbackContext context)
         {
-            Transform facing = cameraPivot != null ? cameraPivot : transform;
-            _rigidbody.AddForce(facing.forward * config.launchImpulse, ForceMode.Impulse);
+            // While flying, double-tap Shift drops you fast until the existing
+            // auto-landing takes over (SurfaceAttach handles the same action's
+            // grounded-state case — takeoff — separately).
+            Vector3 v = _rigidbody.linearVelocity;
+            _rigidbody.linearVelocity = new Vector3(v.x, -config.fallSpeed, v.z);
         }
     }
 }

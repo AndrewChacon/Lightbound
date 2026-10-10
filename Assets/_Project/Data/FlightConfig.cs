@@ -10,7 +10,7 @@ namespace Lightbound
         public float linearDamping = 0.2f;
         public float angularDamping = 1f;
 
-        [Header("Stopping (active brake once Move input releases)")]
+        [Header("Stopping (active brake once Move input releases, horizontal only)")]
         [Range(0f, 1f)] public float stopDragFactor = 0.1f;
 
         [Header("Look")]
@@ -20,6 +20,9 @@ namespace Lightbound
 
         [Header("Launch impulse (double-tap Shift; also used for takeoff)")]
         public float launchImpulse = 8f;
+
+        [Header("Fall-to-ground (double-tap Shift while flying)")]
+        public float fallSpeed = 15f;
 
         [Header("Walking (grounded)")]
         public float walkSpeed = 5f;
