@@ -23,7 +23,6 @@ namespace Lightbound
 
         [Header("Fall-to-ground (double-tap Shift while flying)")]
         public float fallSpeed = 15f;
-        public float fallBoostDuration = 2f;
 
         [Header("Walking (grounded)")]
         public float walkSpeed = 5f;
