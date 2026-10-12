@@ -64,7 +64,7 @@ Assets/
 2. ✅ Landing on surfaces (landing, takeoff, ground walking)
 3. ✅ Pea shooter + one turret enemy (click-to-fire, raycast projectile, destructible/respawning turret target)
 4. Low Power Mode + Lantern Battery station + checkpoints — station itself is ✅ done (built ahead of order); Low Power Mode's state machine is ✅ done, unit tested, and now wired into gameplay via the pea shooter (reduced damage, free shots, charge-per-hit); checkpoints not started
-5. Asteroid belt (breakable asteroids)
+5. ✅ Asteroid belt (wave spawner, cascading breaks, size-based health, Low Power charge-on-hit)
 6. 2-player networking, then 4
 7. Proximity voice, then Steam lobbies
 
