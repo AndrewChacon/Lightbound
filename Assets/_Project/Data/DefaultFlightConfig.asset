@@ -19,6 +19,6 @@ MonoBehaviour:
   mouseSensitivity: 0.3
   minPitch: -89
   maxPitch: 89
-  launchImpulse: 10.66
+  launchImpulse: 21.32
   fallSpeed: 40
   walkSpeed: 8
