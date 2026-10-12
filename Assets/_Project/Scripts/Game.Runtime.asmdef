@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Unity.InputSystem",
-        "Lightbound.Data"
+        "Lightbound.Data",
+        "Unity.Netcode.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
