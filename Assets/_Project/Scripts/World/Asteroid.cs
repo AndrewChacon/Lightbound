@@ -2,13 +2,6 @@ using UnityEngine;
 
 namespace Lightbound
 {
-    public enum AsteroidSize
-    {
-        Small,
-        Medium,
-        Large
-    }
-
     /// <summary>
     /// Drifts at a constant velocity (zero-g coast, no gravity, same pattern as
     /// everything else in this project). Breaks into smaller self-clones when
