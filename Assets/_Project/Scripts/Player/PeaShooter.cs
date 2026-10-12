@@ -22,10 +22,8 @@ namespace Lightbound
         {
             _playerRingEnergy = GetComponent<PlayerRingEnergy>();
             _handRecoil = firePoint != null ? firePoint.GetComponent<HandRecoil>() : null;
-            _ignoreMask = 1 << LayerMask.NameToLayer("Player");
-
-            var flightMap = inputActions.FindActionMap("Flight", throwIfNotFound: true);
-            _fireAction = flightMap.FindAction("Fire");
+            _ignoreMask = 1 << LayerMask.NameToLayer(GameLayers.Player);
+            _fireAction = inputActions.FlightAction("Fire");
         }
 
         private void OnEnable()
@@ -66,13 +64,14 @@ namespace Lightbound
             }
 
             PeaProjectile projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.LookRotation(direction));
-            projectile.Damage = lowPower ? weaponConfig.lowPowerDamage : weaponConfig.normalDamage;
-            projectile.Speed = weaponConfig.projectileSpeed;
-            projectile.MaxRange = weaponConfig.maxRange;
-            projectile.IgnoreMask = _ignoreMask;
-            projectile.GrantsLowPowerCharge = lowPower;
-            projectile.LowPowerChargeAmount = ringConfig.lowPowerChargePerHit;
-            projectile.Shooter = _playerRingEnergy;
+            projectile.Initialize(
+                damage: lowPower ? weaponConfig.lowPowerDamage : weaponConfig.normalDamage,
+                speed: weaponConfig.projectileSpeed,
+                maxRange: weaponConfig.maxRange,
+                ignoreMask: _ignoreMask,
+                grantsLowPowerCharge: lowPower,
+                lowPowerChargeAmount: ringConfig.lowPowerChargePerHit,
+                shooter: _playerRingEnergy);
 
             _handRecoil?.PlayRecoil();
         }

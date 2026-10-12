@@ -21,8 +21,7 @@ namespace Lightbound
 
             _tracker = new LanternChargeTracker(config.chargeTime);
 
-            var flightMap = inputActions.FindActionMap("Flight", throwIfNotFound: true);
-            _interactAction = flightMap.FindAction("Interact");
+            _interactAction = inputActions.FlightAction("Interact");
         }
 
         private void OnEnable()

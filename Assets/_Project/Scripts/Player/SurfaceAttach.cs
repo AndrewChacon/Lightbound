@@ -12,7 +12,6 @@ namespace Lightbound
     [RequireComponent(typeof(Rigidbody))]
     public class SurfaceAttach : MonoBehaviour
     {
-        private const string LandableTag = "Landable";
         private const float LandingCooldown = 0.5f;
 
         [SerializeField] private FlightConfig config;
@@ -35,9 +34,8 @@ namespace Lightbound
             _flightController = GetComponent<FlightController>();
             _surfaceWalker = GetComponent<SurfaceWalker>();
 
-            var flightMap = inputActions.FindActionMap("Flight", throwIfNotFound: true);
-            _moveAction = flightMap.FindAction("Move");
-            _launchAction = flightMap.FindAction("Launch");
+            _moveAction = inputActions.FlightAction("Move");
+            _launchAction = inputActions.FlightAction("Launch");
         }
 
         private void OnEnable()
@@ -66,7 +64,7 @@ namespace Lightbound
         {
             if (_isGrounded) return;
             if (Time.time < _cooldownUntil) return;
-            if (!collision.collider.CompareTag(LandableTag)) return;
+            if (!collision.collider.CompareTag(GameTags.Landable)) return;
 
             SetGrounded(true, collision.GetContact(0).normal);
         }

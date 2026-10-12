@@ -6,35 +6,47 @@ namespace Lightbound
     /// Moves via a swept raycast each frame instead of a Rigidbody — the standard
     /// approach for small fast projectiles, since it can't tunnel through a thin
     /// collider and avoids giving every shot its own physics body. Configured by
-    /// PeaShooter immediately after being spawned, before the first Update runs.
+    /// PeaShooter immediately after being spawned, via Initialize, before the
+    /// first Update runs.
     /// </summary>
     public class PeaProjectile : MonoBehaviour
     {
-        public float Damage { get; set; }
-        public float Speed { get; set; }
-        public float MaxRange { get; set; }
-        public bool GrantsLowPowerCharge { get; set; }
-        public float LowPowerChargeAmount { get; set; }
-        public PlayerRingEnergy Shooter { get; set; }
-        public LayerMask IgnoreMask { get; set; }
-
+        private float _damage;
+        private float _speed;
+        private float _maxRange;
+        private bool _grantsLowPowerCharge;
+        private float _lowPowerChargeAmount;
+        private PlayerRingEnergy _shooter;
+        private LayerMask _ignoreMask;
         private float _distanceTraveled;
+
+        public void Initialize(float damage, float speed, float maxRange, LayerMask ignoreMask,
+            bool grantsLowPowerCharge, float lowPowerChargeAmount, PlayerRingEnergy shooter)
+        {
+            _damage = damage;
+            _speed = speed;
+            _maxRange = maxRange;
+            _ignoreMask = ignoreMask;
+            _grantsLowPowerCharge = grantsLowPowerCharge;
+            _lowPowerChargeAmount = lowPowerChargeAmount;
+            _shooter = shooter;
+        }
 
         private void Update()
         {
-            float step = Speed * Time.deltaTime;
+            float step = _speed * Time.deltaTime;
             Vector3 origin = transform.position;
-            int layerMask = ~IgnoreMask;
+            int layerMask = ~_ignoreMask;
 
             if (Physics.Raycast(origin, transform.forward, out var hit, step, layerMask, QueryTriggerInteraction.Ignore))
             {
                 var damageable = hit.collider.GetComponentInParent<IDamageable>();
                 if (damageable != null)
                 {
-                    damageable.TakeDamage(Damage);
-                    if (GrantsLowPowerCharge && Shooter != null)
+                    damageable.TakeDamage(_damage);
+                    if (_grantsLowPowerCharge && _shooter != null)
                     {
-                        Shooter.Ring.Recharge(LowPowerChargeAmount);
+                        _shooter.Ring.Recharge(_lowPowerChargeAmount);
                     }
                 }
 
@@ -45,7 +57,7 @@ namespace Lightbound
             transform.position = origin + transform.forward * step;
             _distanceTraveled += step;
 
-            if (_distanceTraveled >= MaxRange)
+            if (_distanceTraveled >= _maxRange)
             {
                 Destroy(gameObject);
             }

@@ -14,8 +14,6 @@ namespace Lightbound
     [RequireComponent(typeof(Rigidbody))]
     public class SurfaceWalker : MonoBehaviour
     {
-        private const string LandableTag = "Landable";
-
         [SerializeField] private FlightConfig config;
         [SerializeField] private InputActionAsset inputActions;
 
@@ -28,9 +26,8 @@ namespace Lightbound
         {
             _rigidbody = GetComponent<Rigidbody>();
 
-            var flightMap = inputActions.FindActionMap("Flight", throwIfNotFound: true);
-            _moveAction = flightMap.FindAction("Move");
-            _jumpAction = flightMap.FindAction("Jump");
+            _moveAction = inputActions.FlightAction("Move");
+            _jumpAction = inputActions.FlightAction("Jump");
         }
 
         // Move's global enabled state is owned by SurfaceAttach (shared with
@@ -65,7 +62,7 @@ namespace Lightbound
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (_isJumping && collision.collider.CompareTag(LandableTag))
+            if (_isJumping && collision.collider.CompareTag(GameTags.Landable))
             {
                 _isJumping = false;
             }

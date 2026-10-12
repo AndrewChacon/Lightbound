@@ -21,8 +21,7 @@ namespace Lightbound
 
         private void Awake()
         {
-            var flightMap = inputActions.FindActionMap("Flight", throwIfNotFound: true);
-            _lookAction = flightMap.FindAction("Look");
+            _lookAction = inputActions.FlightAction("Look");
         }
 
         private void OnEnable()

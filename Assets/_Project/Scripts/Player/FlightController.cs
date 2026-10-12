@@ -28,11 +28,10 @@ namespace Lightbound
             // station's capsule) at flight speeds, so sweep for collisions instead.
             _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-            var flightMap = inputActions.FindActionMap("Flight", throwIfNotFound: true);
-            _moveAction = flightMap.FindAction("Move");
-            _launchAction = flightMap.FindAction("Launch");
-            _ascendAction = flightMap.FindAction("Ascend");
-            _descendAction = flightMap.FindAction("Descend");
+            _moveAction = inputActions.FlightAction("Move");
+            _launchAction = inputActions.FlightAction("Launch");
+            _ascendAction = inputActions.FlightAction("Ascend");
+            _descendAction = inputActions.FlightAction("Descend");
         }
 
         private void OnEnable()
@@ -72,8 +71,7 @@ namespace Lightbound
             else
             {
                 // Active brake on horizontal drift once Move releases.
-                Vector3 v = _rigidbody.linearVelocity;
-                _rigidbody.linearVelocity = new Vector3(v.x * decay, v.y, v.z * decay);
+                DecayHorizontalVelocity(decay);
             }
 
             if (_isFalling)
@@ -82,8 +80,7 @@ namespace Lightbound
                 // height, until SurfaceAttach lands us (which disables this whole
                 // component) — overrides Ascend/Descend and skips the vertical
                 // brake entirely so it can't decay back to a stop mid-air.
-                Vector3 v = _rigidbody.linearVelocity;
-                _rigidbody.linearVelocity = new Vector3(v.x, -config.fallSpeed, v.z);
+                SetVerticalVelocity(-config.fallSpeed);
             }
             else
             {
@@ -98,10 +95,27 @@ namespace Lightbound
                 {
                     // Same brake on vertical drift once Ascend/Descend release,
                     // mirroring horizontal exactly.
-                    Vector3 v = _rigidbody.linearVelocity;
-                    _rigidbody.linearVelocity = new Vector3(v.x, v.y * decay, v.z);
+                    DecayVerticalVelocity(decay);
                 }
             }
+        }
+
+        private void DecayHorizontalVelocity(float decay)
+        {
+            Vector3 v = _rigidbody.linearVelocity;
+            _rigidbody.linearVelocity = new Vector3(v.x * decay, v.y, v.z * decay);
+        }
+
+        private void DecayVerticalVelocity(float decay)
+        {
+            Vector3 v = _rigidbody.linearVelocity;
+            _rigidbody.linearVelocity = new Vector3(v.x, v.y * decay, v.z);
+        }
+
+        private void SetVerticalVelocity(float y)
+        {
+            Vector3 v = _rigidbody.linearVelocity;
+            _rigidbody.linearVelocity = new Vector3(v.x, y, v.z);
         }
 
         private void OnLaunchPerformed(InputAction.CallbackContext context)

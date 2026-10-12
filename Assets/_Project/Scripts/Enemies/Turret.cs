@@ -6,7 +6,7 @@ namespace Lightbound
     /// <summary>
     /// Stationary destructible target. Disables its own Collider/Renderer (not the
     /// whole GameObject, which would also stop its respawn coroutine) on death,
-    /// then resets and reappears after StationConfig's respawnDelay.
+    /// then resets and reappears after TurretConfig's respawnDelay.
     /// </summary>
     [RequireComponent(typeof(Collider))]
     public class Turret : MonoBehaviour, IDamageable

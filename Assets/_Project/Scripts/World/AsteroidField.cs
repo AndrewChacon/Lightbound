@@ -25,12 +25,12 @@ namespace Lightbound
 
         private void SpawnWave()
         {
-            for (int i = 0; i < config.asteroidsPerWave; i++)
-            {
-                int currentCount = FindObjectsByType<Asteroid>(FindObjectsSortMode.None).Length;
-                if (currentCount >= config.maxConcurrent) return;
+            int currentCount = FindObjectsByType<Asteroid>(FindObjectsSortMode.None).Length;
 
+            for (int i = 0; i < config.asteroidsPerWave && currentCount < config.maxConcurrent; i++)
+            {
                 SpawnOne();
+                currentCount++;
             }
         }
 

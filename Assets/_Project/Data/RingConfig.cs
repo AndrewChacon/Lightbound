@@ -12,7 +12,7 @@ namespace Lightbound
         [Range(0f, 1f)] public float lowPowerEnterPercent = 0.01f;
         [Range(0f, 1f)] public float lowPowerExitPercent = 0.5f;
 
-        [Header("Pea shot (wired up in a later build-order step)")]
+        [Header("Pea shot")]
         public float peaShotEnergyCost = 5f;
         public float lowPowerChargePerHit = 2f;
     }
