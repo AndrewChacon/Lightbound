@@ -1,13 +1,13 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Lightbound
 {
-    public class PeaShooter : MonoBehaviour
+    public class PeaShooter : NetworkBehaviour
     {
         [SerializeField] private WeaponConfig weaponConfig;
         [SerializeField] private RingConfig ringConfig;
-        [SerializeField] private InputActionAsset inputActions;
         [SerializeField] private PeaProjectile projectilePrefab;
         [SerializeField] private Transform firePoint;
         [SerializeField] private Transform aimOrigin;
@@ -23,7 +23,7 @@ namespace Lightbound
             _playerRingEnergy = GetComponent<PlayerRingEnergy>();
             _handRecoil = firePoint != null ? firePoint.GetComponent<HandRecoil>() : null;
             _ignoreMask = 1 << LayerMask.NameToLayer(GameLayers.Player);
-            _fireAction = inputActions.FlightAction("Fire");
+            _fireAction = GetComponent<PlayerInputActions>().Actions.FlightAction("Fire");
         }
 
         private void OnEnable()
@@ -63,17 +63,35 @@ namespace Lightbound
                 ring.Drain(ringConfig.peaShotEnergyCost);
             }
 
-            PeaProjectile projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.LookRotation(direction));
-            projectile.Initialize(
-                damage: lowPower ? weaponConfig.lowPowerDamage : weaponConfig.normalDamage,
-                speed: weaponConfig.projectileSpeed,
-                maxRange: weaponConfig.maxRange,
-                ignoreMask: _ignoreMask,
-                grantsLowPowerCharge: lowPower,
-                lowPowerChargeAmount: ringConfig.lowPowerChargePerHit,
-                shooter: _playerRingEnergy);
+            // Spawning a NetworkObject requires server authority, so a client that
+            // isn't also the host asks the server to do it -- the server then hands
+            // ownership straight back to the shooter, matching Player's own
+            // Owner-Authoritative NetworkTransform so the shooter's local hit
+            // detection isn't delayed by a round trip.
+            FireServerRpc(
+                firePoint.position,
+                Quaternion.LookRotation(direction),
+                lowPower ? weaponConfig.lowPowerDamage : weaponConfig.normalDamage,
+                weaponConfig.projectileSpeed,
+                weaponConfig.maxRange,
+                _ignoreMask.value,
+                lowPower,
+                ringConfig.lowPowerChargePerHit);
 
             _handRecoil?.PlayRecoil();
+        }
+
+        [ServerRpc]
+        private void FireServerRpc(Vector3 position, Quaternion rotation, float damage, float speed,
+            float maxRange, int ignoreMask, bool grantsLowPowerCharge, float lowPowerChargeAmount,
+            ServerRpcParams rpcParams = default)
+        {
+            ulong shooterClientId = rpcParams.Receive.SenderClientId;
+            PlayerRingEnergy shooter = NetworkManager.ConnectedClients[shooterClientId].PlayerObject.GetComponent<PlayerRingEnergy>();
+
+            PeaProjectile projectile = Instantiate(projectilePrefab, position, rotation);
+            projectile.Initialize(damage, speed, maxRange, ignoreMask, grantsLowPowerCharge, lowPowerChargeAmount, shooter);
+            projectile.NetworkObject.SpawnWithOwnership(shooterClientId);
         }
     }
 }

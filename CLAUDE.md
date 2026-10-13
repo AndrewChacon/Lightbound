@@ -65,7 +65,7 @@ Assets/
 3. ✅ Pea shooter + one turret enemy (click-to-fire, raycast projectile, destructible/respawning turret target)
 4. Low Power Mode + Lantern Battery station + checkpoints — station itself is ✅ done (built ahead of order); Low Power Mode's state machine is ✅ done, unit tested, and now wired into gameplay via the pea shooter (reduced damage, free shots, charge-per-hit); checkpoints not started
 5. ✅ Asteroid belt (wave spawner, cascading breaks, size-based health, Low Power charge-on-hit)
-6. 2-player networking, then 4
+6. 2-player networking, then 4 — Phase 1 (connection + synced movement) is ✅ done and tested working: NGO + Unity Transport added, Player is a NetworkObject prefab (Owner-Authoritative NetworkTransform), host/client connect via a temporary debug bootstrap (H/J keys). Pea shots are now also visible across clients (owner-authoritative, same pattern as Player). Known gap: hit detection still only runs on the shooter's own machine, since Turret/Asteroid health isn't networked yet — that's Phase 2 (making RingEnergy/Turret/Asteroid/LanternBatteryStation server-authoritative per the architecture rules above). 4-player not yet tested.
 7. Proximity voice, then Steam lobbies
 
 ## Working with Claude

@@ -15,7 +15,6 @@ namespace Lightbound
     public class SurfaceWalker : MonoBehaviour
     {
         [SerializeField] private FlightConfig config;
-        [SerializeField] private InputActionAsset inputActions;
 
         private Rigidbody _rigidbody;
         private InputAction _moveAction;
@@ -26,8 +25,9 @@ namespace Lightbound
         {
             _rigidbody = GetComponent<Rigidbody>();
 
-            _moveAction = inputActions.FlightAction("Move");
-            _jumpAction = inputActions.FlightAction("Jump");
+            var actions = GetComponent<PlayerInputActions>().Actions;
+            _moveAction = actions.FlightAction("Move");
+            _jumpAction = actions.FlightAction("Jump");
         }
 
         // Move's global enabled state is owned by SurfaceAttach (shared with

@@ -10,7 +10,6 @@ namespace Lightbound
     public class FirstPersonLook : MonoBehaviour
     {
         [SerializeField] private FlightConfig config;
-        [SerializeField] private InputActionAsset inputActions;
         [SerializeField] private Transform cameraPivot;
 
         private InputAction _lookAction;
@@ -21,7 +20,7 @@ namespace Lightbound
 
         private void Awake()
         {
-            _lookAction = inputActions.FlightAction("Look");
+            _lookAction = GetComponent<PlayerInputActions>().Actions.FlightAction("Look");
         }
 
         private void OnEnable()

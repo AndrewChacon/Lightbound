@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DefaultWeaponConfig
   m_EditorClassIdentifier: Lightbound.Data::Lightbound.WeaponConfig
   cooldown: 0.12
-  projectileSpeed: 50
+  projectileSpeed: 100
   maxRange: 60
   normalDamage: 10
   lowPowerDamage: 3

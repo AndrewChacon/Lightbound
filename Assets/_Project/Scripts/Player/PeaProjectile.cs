@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Lightbound
@@ -8,8 +9,13 @@ namespace Lightbound
     /// collider and avoids giving every shot its own physics body. Configured by
     /// PeaShooter immediately after being spawned, via Initialize, before the
     /// first Update runs.
+    /// Owner-authoritative, matching the Player prefab's own NetworkTransform: only
+    /// the shooting client actually simulates movement and hit detection, so their
+    /// own local Turret/Asteroid interaction feels exactly as it did before
+    /// networking. NetworkTransform just replicates that client's resulting
+    /// position out to everyone else so the shot is visible on their screens too.
     /// </summary>
-    public class PeaProjectile : MonoBehaviour
+    public class PeaProjectile : NetworkBehaviour
     {
         private float _damage;
         private float _speed;
@@ -34,6 +40,8 @@ namespace Lightbound
 
         private void Update()
         {
+            if (!IsOwner) return;
+
             float step = _speed * Time.deltaTime;
             Vector3 origin = transform.position;
             int layerMask = ~_ignoreMask;
@@ -50,7 +58,7 @@ namespace Lightbound
                     }
                 }
 
-                Destroy(gameObject);
+                DespawnServerRpc();
                 return;
             }
 
@@ -59,7 +67,19 @@ namespace Lightbound
 
             if (_distanceTraveled >= _maxRange)
             {
-                Destroy(gameObject);
+                DespawnServerRpc();
+            }
+        }
+
+        [ServerRpc]
+        private void DespawnServerRpc()
+        {
+            // Only the server may despawn a NetworkObject, even when this client
+            // owns it for NetworkTransform purposes -- ownership covers sync
+            // authority, not lifecycle.
+            if (NetworkObject.IsSpawned)
+            {
+                NetworkObject.Despawn();
             }
         }
     }

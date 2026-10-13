@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5863208605280220468}
   - component: {fileID: 3462949712990958572}
   m_Layer: 0
-  m_Name: PeaProjectile
+  m_Name: PeaProjectilePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

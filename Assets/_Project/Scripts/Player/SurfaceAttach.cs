@@ -15,7 +15,6 @@ namespace Lightbound
         private const float LandingCooldown = 0.5f;
 
         [SerializeField] private FlightConfig config;
-        [SerializeField] private InputActionAsset inputActions;
 
         private Rigidbody _rigidbody;
         private FirstPersonLook _look;
@@ -34,8 +33,9 @@ namespace Lightbound
             _flightController = GetComponent<FlightController>();
             _surfaceWalker = GetComponent<SurfaceWalker>();
 
-            _moveAction = inputActions.FlightAction("Move");
-            _launchAction = inputActions.FlightAction("Launch");
+            var actions = GetComponent<PlayerInputActions>().Actions;
+            _moveAction = actions.FlightAction("Move");
+            _launchAction = actions.FlightAction("Launch");
         }
 
         private void OnEnable()

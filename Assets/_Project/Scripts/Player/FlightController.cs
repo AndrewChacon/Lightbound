@@ -7,7 +7,6 @@ namespace Lightbound
     public class FlightController : MonoBehaviour
     {
         [SerializeField] private FlightConfig config;
-        [SerializeField] private InputActionAsset inputActions;
 
         private Rigidbody _rigidbody;
         private InputAction _moveAction;
@@ -28,10 +27,11 @@ namespace Lightbound
             // station's capsule) at flight speeds, so sweep for collisions instead.
             _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-            _moveAction = inputActions.FlightAction("Move");
-            _launchAction = inputActions.FlightAction("Launch");
-            _ascendAction = inputActions.FlightAction("Ascend");
-            _descendAction = inputActions.FlightAction("Descend");
+            var actions = GetComponent<PlayerInputActions>().Actions;
+            _moveAction = actions.FlightAction("Move");
+            _launchAction = actions.FlightAction("Launch");
+            _ascendAction = actions.FlightAction("Ascend");
+            _descendAction = actions.FlightAction("Descend");
         }
 
         private void OnEnable()

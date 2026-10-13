@@ -6,8 +6,6 @@ namespace Lightbound
     [RequireComponent(typeof(Image))]
     public class EnergyBar : MonoBehaviour
     {
-        [SerializeField] private PlayerRingEnergy playerRingEnergy;
-
         private Image _fillImage;
         private RingEnergy _ring;
 
@@ -16,25 +14,28 @@ namespace Lightbound
             _fillImage = GetComponent<Image>();
         }
 
-        private void Start()
+        private void OnEnable()
         {
-            // Not OnEnable: Unity only guarantees every object's Awake/OnEnable has
-            // run before anyone's Start, not before another object's OnEnable —
-            // PlayerRingEnergy.Ring is set in its own Awake, so reading it here
-            // instead of OnEnable avoids a startup-order-dependent null reference
-            // (this bit the energy bar in a standalone build, though not in the
-            // Editor, where object init order happened to work out differently).
-            _ring = playerRingEnergy.Ring;
-            UpdateFill(_ring.Current, _ring.Max);
-            _ring.OnEnergyChanged += HandleEnergyChanged;
+            // Player is spawned at runtime by NetworkManager rather than being a
+            // fixed scene object, so there's nothing to wire up via the Inspector
+            // anymore — wait for NetworkPlayerSetup to announce the local player.
+            NetworkPlayerSetup.LocalPlayerSpawned += HandleLocalPlayerSpawned;
         }
 
         private void OnDisable()
         {
+            NetworkPlayerSetup.LocalPlayerSpawned -= HandleLocalPlayerSpawned;
             if (_ring != null)
             {
                 _ring.OnEnergyChanged -= HandleEnergyChanged;
             }
+        }
+
+        private void HandleLocalPlayerSpawned(PlayerRingEnergy playerRingEnergy)
+        {
+            _ring = playerRingEnergy.Ring;
+            UpdateFill(_ring.Current, _ring.Max);
+            _ring.OnEnergyChanged += HandleEnergyChanged;
         }
 
         private void HandleEnergyChanged(float value)
