@@ -24,7 +24,7 @@ namespace Lightbound
 
         private void Awake()
         {
-            Actions = sourceActions.Clone();
+            Actions = Instantiate(sourceActions);
         }
 
         private void OnDestroy()

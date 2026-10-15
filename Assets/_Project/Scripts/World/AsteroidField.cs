@@ -25,7 +25,7 @@ namespace Lightbound
 
         private void SpawnWave()
         {
-            int currentCount = FindObjectsByType<Asteroid>(FindObjectsSortMode.None).Length;
+            int currentCount = FindObjectsByType<Asteroid>(FindObjectsInactive.Exclude).Length;
 
             for (int i = 0; i < config.asteroidsPerWave && currentCount < config.maxConcurrent; i++)
             {
